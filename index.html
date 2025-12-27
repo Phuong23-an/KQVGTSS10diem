@@ -1,0 +1,4027 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Lập Trình Mạng</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a6fa5);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .quiz-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .info-item i {
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .controls-panel {
+            padding: 20px;
+            background: #e8f4fc;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid #c3d7ea;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-toggle {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-toggle.active {
+            background: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-toggle.shuffle {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-toggle.shuffle.active {
+            background: #e0a800;
+        }
+
+        .btn-retry {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-retry.active {
+            background: #6c757d;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-nav {
+            background: #3498db;
+            color: white;
+            flex: 1;
+            min-width: 150px;
+            justify-content: center;
+        }
+
+        .btn-nav:disabled {
+            background: #a0c4ff;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .question-container {
+            padding: 30px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .question-number {
+            font-size: 1.4rem;
+            color: #4a6fa5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .retry-mode-badge {
+            background: #dc3545;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* THÊM PHẦN CODE CONTAINER */
+        .code-container {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            tab-size: 4;
+            border-left: 4px solid #3498db;
+        }
+
+        .code-container .line-number {
+            color: #888;
+            margin-right: 15px;
+            user-select: none;
+        }
+
+        .code-container .keyword {
+            color: #c678dd;
+        }
+
+        .code-container .string {
+            color: #98c379;
+        }
+
+        .code-container .class {
+            color: #e5c07b;
+        }
+
+        .code-container .method {
+            color: #61afef;
+        }
+
+        .code-container .comment {
+            color: #5c6370;
+        }
+
+        .code-container .number {
+            color: #d19a66;
+        }
+
+        /* THÊM STYLE CHO HÌNH ẢNH */
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            padding: 5px 0;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .question-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            white-space: pre-line;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            background: #f0f7ff;
+            border-color: #a0c4ff;
+            transform: translateX(10px);
+        }
+
+        .option.selected {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+            animation: correctPulse 0.6s ease;
+        }
+
+        .option.incorrect {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #dc3545;
+            color: #721c24;
+            animation: incorrectShake 0.6s ease;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .option-label {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9ecef;
+            border-radius: 50%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .option.correct .option-label {
+            background: #28a745;
+            color: white;
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.5);
+        }
+
+        .option.incorrect .option-label {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        .status-icon {
+            font-size: 1.3rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .option.correct .status-icon {
+            opacity: 1;
+            color: #28a745;
+        }
+
+        .option.incorrect .status-icon {
+            opacity: 1;
+            color: #dc3545;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            border-radius: 8px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            padding: 0 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .navigation {
+            padding: 20px 30px;
+            display: flex;
+            gap: 15px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .result-container {
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-header {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #4a6fa5;
+            margin: 30px 0;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+        }
+
+        .score-text {
+            font-size: 1.5rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .quiz-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-panel {
+                justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+                padding: 15px;
+            }
+            
+            .option {
+                padding: 15px;
+            }
+            
+            .score {
+                font-size: 3rem;
+            }
+            
+            .code-container {
+                font-size: 12px;
+                padding: 15px;
+            }
+            
+            .question-image {
+                max-width: 95%;
+            }
+        }
+
+        /* Hiệu ứng loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <i class="fas fa-brain"></i>
+                Trắc Nghiệm Khái Quát Về Giải Thuật Song Song
+            </h1>
+            <p class="subtitle">Ôn tập kiến thức Khái Quát Về Giải Thuật Song Song</p>
+        </header>
+
+        <div class="quiz-info">
+            <div class="info-item">
+                <i class="fas fa-question-circle"></i>
+                <div>
+                    <div>Câu hiện tại</div>
+                    <div id="current-question">1/95</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <div>Đã trả lời</div>
+                    <div id="answered-count">0/95</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-star"></i>
+                <div>
+                    <div>Điểm số</div>
+                    <div id="score">0</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-chart-line"></i>
+                <div>
+                    <div>Tiến độ</div>
+                    <div id="progress-percent">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-panel">
+            <button id="auto-next-btn" class="btn btn-toggle active">
+                <i class="fas fa-bolt"></i>
+                <span>Tự chuyển câu (BẬT)</span>
+            </button>
+            <button id="shuffle-questions-btn" class="btn btn-toggle shuffle">
+                <i class="fas fa-random"></i>
+                <span>Đảo câu hỏi</span>
+            </button>
+            <button id="shuffle-options-btn" class="btn btn-toggle">
+                <i class="fas fa-list-ol"></i>
+                <span>Đảo đáp án</span>
+            </button>
+            <button id="retry-wrong-btn" class="btn btn-retry">
+                <i class="fas fa-redo-alt"></i>
+                <span>Làm lại câu sai</span>
+            </button>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text">
+                <span>Bắt đầu</span>
+                <span id="progress-text">0%</span>
+                <span>Hoàn thành</span>
+            </div>
+        </div>
+
+        <div id="quiz-content">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button id="prev-btn" class="btn btn-nav" disabled>
+                <i class="fas fa-arrow-left"></i>
+                Câu trước
+            </button>
+            <button id="next-btn" class="btn btn-nav">
+                Câu sau
+                <i class="fas fa-arrow-right"></i>
+            </button>
+            <button id="result-btn" class="btn btn-nav" style="background: #ffc107; color: #212529; display: none;">
+                <i class="fas fa-chart-bar"></i>
+                Xem kết quả
+            </button>
+        </div>
+
+        <div id="result-container" class="result-container">
+            <h2 class="result-header">
+                <i class="fas fa-trophy"></i>
+                Kết Quả Bài Làm
+            </h2>
+            
+            <div class="score" id="final-score">0/95</div>
+            
+            <div class="score-text" id="score-text">Đang tính toán...</div>
+            
+            <div class="result-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-correct">0</div>
+                    <div class="stat-label">Câu đúng</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-wrong">0</div>
+                    <div class="stat-label">Câu sai</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-skipped">0</div>
+                    <div class="stat-label">Chưa làm</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-percentage">0%</div>
+                    <div class="stat-label">Tỷ lệ đúng</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;">
+                <button id="restart-btn" class="btn" style="background: #28a745; color: white;">
+                    <i class="fas fa-redo"></i>
+                    Làm lại
+                </button>
+                <button id="review-btn" class="btn" style="background: #17a2b8; color: white;">
+                    <i class="fas fa-search"></i>
+                    Xem chi tiết
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 - Ôn tập Khái Quát Về Giải Thuật Song Song</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Nhấn F5 để làm lại từ đầu</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== HÀM XỬ LÝ CODE JAVA ==========
+        const highlightJavaCode = (code) => {
+            // Thay thế các từ khóa Java với span có class
+            let highlighted = code
+                .replace(/\b(try|catch|finally|throw|throws|new|class|interface|extends|implements|public|private|protected|static|final|void|int|long|float|double|char|byte|short|boolean|if|else|while|do|for|switch|case|default|break|continue|return|import|package)\b/g, 
+                    '<span class="keyword">$1</span>')
+                .replace(/\b([A-Z][a-zA-Z0-9]*)\b/g, 
+                    '<span class="class">$1</span>')
+                .replace(/\b(get[A-Z][a-zA-Z0-9]*|set[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*)\(/g, 
+                    '<span class="method">$1</span>(')
+                .replace(/"(.*?)"/g, 
+                    '<span class="string">"$1"</span>')
+                .replace(/\b(\d+)\b/g, 
+                    '<span class="number">$1</span>')
+                .replace(/\/\/.*$/gm, 
+                    '<span class="comment">$&</span>')
+                .replace(/\/\*[\s\S]*?\*\//g, 
+                    '<span class="comment">$&</span>');
+            
+            // Thêm số dòng cho code có số dòng (1., 2., 3., ...)
+            if (code.includes('1.')) {
+                const lines = highlighted.split('\n');
+                highlighted = lines.map((line, index) => {
+                    const trimmed = line.trim();
+                    if (trimmed.match(/^\d+\./)) {
+                        return `<span class="line-number">${trimmed.substring(0, trimmed.indexOf(' '))}</span>${line.substring(trimmed.indexOf(' '))}`;
+                    }
+                    return line;
+                }).join('\n');
+            }
+            
+            return highlighted;
+        };
+
+        // ========== DỮ LIỆU CÂU HỎI (CÓ THỂ THÊM HÌNH ẢNH) ==========
+       const allQuestions = [
+    // Câu 1-10
+    {
+        question: "Mô hình nào trong mô hình dưới đây không phải là mô hình máy tính song song?",
+        options: ["SISD", "SIMD", "MISD", "MIMD"],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình nào trong mô hình dưới đây là mô hình máy tính song song thực sự?",
+        options: ["SISD", "SIMD", "MISD", "MIMD"],
+        correctAnswer: 3
+    },
+    {
+        question: "Mô hình Multiple Instruction, Single Data là gì?",
+        options: [
+            "Là mô hình giống như máy tuần tự",
+            "Là mô hình song song thực sự",
+            "Là mô hình chia sẻ bộ nhớ",
+            "Là mô hình song song hóa về mặt dữ liệu"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Mô hình Single Instruction, Multiple Data là gì?",
+        options: [
+            "Là mô hình giống như máy tuần tự",
+            "Là mô hình song song thực sự",
+            "Là mô hình chia sẻ bộ nhớ",
+            "Là mô hình song song hóa về mặt dữ liệu"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Mô hình máy tính song song MIMD viết tắt của từ gì?",
+        options: [
+            "Memory Input Memory Data",
+            "Multiple Instruction, Multiple Data",
+            "Memory Instruction, Memory Data",
+            "Memory Instruction, Memory Diagram"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình máy tính song song SIMD viết tắt của từ gì?",
+        options: [
+            "System Input Memory Data",
+            "System Instruction, Multiple Data",
+            "Single Instruction, Memory Data",
+            "Single Instruction, Multiple Data"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Mô hình Single Instruction, Multiple Data nghĩa là gì?",
+        options: [
+            "Đơn luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Mô hình Multiple Instruction, Multiple Data nghĩa là gì?",
+        options: [
+            "Đơn luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Mô hình Multiple Instruction, Single Data nghĩa là gì?",
+        options: [
+            "Đơn luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Bài toán nào không thể thực hiện được giải thuật song hóa?",
+        options: [
+            "Nhân ma trận với ma trận",
+            "Nhân ma trận với véc tơ",
+            "Fibonaci",
+            "Tìm số nguyên tố nhỏ hơn N"
+        ],
+        correctAnswer: 2
+    },
+
+    // Câu 11-20
+    {
+        question: "Trình tự bài toán song song hóa là gì?",
+        options: [
+            "Xác định rõ vấn đề, phân hoạch, truyền thông, gom kết, ánh xạ",
+            "Phân hoạch, xác định rõ vấn đề, truyền thông, gom kết, ánh xạ",
+            "ánh xạ, gom kết, xác định rõ vấn đề, phân hoạch, truyền thông",
+            "Xác định rõ vấn đề, truyền thông, gom kết, ánh xạ"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình SISD (Single Instruction, Single Data) nghĩa là gì?",
+        options: [
+            "Đơn luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Xử lý song song là gì?",
+        options: [
+            "Xử lý song song là quá trình xử lý gồm nhiều tiến trình được kích hoạt đồng thời và cùng tham gia giải quyết nhiều vấn đề.",
+            "Xử lý song song là quá trình xử lý gồm nhiều tiến trình được kích hoạt đồng thời và cùng tham gia giải quyết một vấn đề.",
+            "Xử lý song song là quá trình xử lý gồm 1 tiến trình được kích hoạt giải quyết một vấn đề.",
+            "Đơn luồng lệnh, đơn luồng dữ liệu"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Vì sao phải xử lý song song?",
+        options: [
+            "Do một xử lý làm nhiều dễ bị hỏng",
+            "Cần thực hiện khối lượng lớn công việc, không quan trọng về thời gian",
+            "Cần thực hiện khối lượng lớn công việc, thời gian xử lý phải nhanh",
+            "Do đĩa cứng không chứa đủ dữ liệu"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Tiêu chí nào không phải là tiêu chí đánh giá thuật giải tuần tự?",
+        options: [
+            "Thời gian thực hiện thuật toán",
+            "Không gian bộ nhớ",
+            "Khả năng lập trình",
+            "Khả năng truyền thông điệp giữa các bộ xử lý"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Mô hình Single Instruction, Single Data nghĩa là gì?",
+        options: [
+            "Đơn luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình nào là mô hình đơn luồng lệnh, đơn luồng dữ liệu?",
+        options: [
+            "Single Instruction, Single Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Multiple Data"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình nào là mô hình đa luồng lệnh, đơn luồng dữ liệu?",
+        options: [
+            "Single Instruction, Single Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Multiple Data"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình nào là mô hình đơn luồng lệnh, đa luồng dữ liệu?",
+        options: [
+            "Single Instruction, Single Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Multiple Data"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Mô hình nào là mô hình đa luồng lệnh, đa luồng dữ liệu?",
+        options: [
+            "Single Instruction, Single Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Multiple Data"
+        ],
+        correctAnswer: 3
+    },
+
+    // Câu 21-30
+    {
+        question: "Cách thực hiện nào tối ưu khi thực hiện tính n! trên đồng thời hai máy?",
+        options: [
+            "Mỗi máy tính nhân n/2 số",
+            "Mỗi máy tính nhân n/3 số",
+            "Mỗi máy tính nhân n/4 số",
+            "Mỗi máy tính nhân n/5 số"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mỗi máy tính sẽ thực hiện nhân n/4 với n chia hết cho 4 số trong trường hợp nào?",
+        options: [
+            "Tính giai thừa n! với 3 máy tính thực hiện đồng thời",
+            "Tính giai thừa n! với 4 máy tính thực hiện đồng thời",
+            "Tính giai thừa n! với 5 máy tính thực hiện đồng thời",
+            "Tính giai thừa n! với 6 máy tính thực hiện đồng thời"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Sau khi mỗi máy thực thực hiện n/2 phép tính nhân của bài toán tính giai thừa trên 2 máy sẽ làm gì?",
+        options: [
+            "Máy 2 gửi kết quả về máy 1",
+            "Máy 2 thực hiện phép tính nhân tiếp n/2 số",
+            "Máy 1 thực hiện phép tính nhân n/2 số",
+            "Các máy tính không gửi dữ liệu cho nhau"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Tìm phần tử x trên mảng A gồm n phần tử, đâu là phương pháp xử lý song song?",
+        options: [
+            "Tìm lần lượt từ đầu đến cuối mảng",
+            "Tìm lần lượt từ cuối đến đầu mảng",
+            "Tìm từ giữa đến cuối mảng",
+            "Giả sử có m bộ xử lý mỗi bộ xử lý tìm kiếm trên n/m phần tử"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Giả sử có 5 bộ xử lý tìm phần tử x trên mảng A gồm n phần tử, phương pháp nào tối ưu?",
+        options: [
+            "Chia mảng A làm 1 đoạn",
+            "Chia mảng A làm 5 đoạn",
+            "Chia mảng A làm 11 đoạn",
+            "Chia mảng A làm 8 đoạn"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Song song hóa bài toán tuần tự sẽ làm gì?",
+        options: [
+            "Chia bài toán thành bài toán nhỏ hơn, gán mỗi bài toán nhỏ cho mỗi bộ xử lý khác nhau thực hiện.",
+            "Không chia nhỏ bài toán",
+            "Chia bài toán thành bài toán nhỏ hơn, gán mỗi bài toán nhỏ cho chỉ một bộ xử lý thực hiện",
+            "Mỗi bộ xử lý sẽ thực hiện cả bài toán đó"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Bài toán Fibonaci sẽ thực hiện theo giải thuật song song như thế nào?",
+        options: [
+            "Chia bài toán thành bài toán nhỏ hơn, gán mỗi bài toán nhỏ cho mỗi bộ xử lý khác nhau thực hiện",
+            "Không xử lý theo giải thuật song song được",
+            "Chia bài toán thành bài toán nhỏ hơn, gán mỗi bài toán nhỏ cho chỉ một bộ xử lý thực hiện",
+            "Thực hiện được theo thuật giải song song"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Bài toán tính tổng N phần tử trong mảng một chiều?",
+        options: [
+            "Có thể thực hiện theo thuật giải song song",
+            "Không thực hiện theo thuật giải song song được",
+            "Chỉ có thể thực hiện theo giải thuật tuần tự",
+            "Bài toán không lập trình được"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Chương trình song song theo mô hình bộ nhớ chia sẻ?",
+        options: [
+            "Nhiều bộ xử lý dùng chung 1 bộ nhớ",
+            "Mỗi bộ xử lý có một vùng nhớ riêng",
+            "Mỗi bộ xử lý có nhiều bộ nhớ",
+            "Mỗi bộ xử lý không có bộ nhớ nào cả"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Nhiều bộ xử lý dùng chung 1 bộ nhớ là đặc trưng của mô hình nào?",
+        options: [
+            "Mô hình bộ nhớ chia sẻ",
+            "Mô hình truyền thông điệp",
+            "Không theo mô hình nào cả",
+            "Chương trình xử lý tuần tự"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 31-40
+    {
+        question: "Chương trình song song theo mô hình truyền thông điệp?",
+        options: [
+            "Các bộ xử lý không truyền dữ liệu cho nhau",
+            "Các bộ xử lý truyền dữ liệu không cần mạng",
+            "Các bộ xử lý truyền dữ liệu truyền dự liệu thông qua mạng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Hình vẽ trên khi thiết kế chương trình song song theo mô hình gì?",
+        image: "images/33.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình truyền thông điệp",
+            "Mô hình chia sẻ bộ nhớ",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình vẽ trên từ: proc2 có nghĩa là gì?",
+        image: "images/34.jpg", 
+        imageCaption: "",
+        options: [
+            "ổ đĩa 2",
+            "Bộ nhớ 2",
+            "Bộ xử lý 2",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Hình vẽ trên từ: mem2 viết tắt của từ nào?",
+        image: "images/35.jpg", 
+        imageCaption: "",
+        options: [
+            "memory 2",
+            "memo 2",
+            "member 2",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên từ: proc2 viết tắt của từ nào?",
+        image: "images/36.jpg", 
+        imageCaption: "",
+        options: [
+            "processor 2",
+            "procedure 2",
+            "Tất cả đề đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên phát biểu nào đúng?",
+        image: "images/37.jpg", 
+        imageCaption: "",
+        options: [
+            "proc1 có thể truy cập vào dữ liệu của mem1, mem2, mem3",
+            "proc1 có thể truy cập vào dữ liệu của mem2, mem3",
+            "proc1 có thể truy cập vào dữ liệu của mem2",
+            "proc1 có thể truy cập vào dữ liệu của mem1"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Hình vẽ trên phát biểu nào sai?",
+        image: "images/38.jpg", 
+        imageCaption: "",
+        options: [
+            "Proc1 có thể truy cập vào dữ liệu của mem1",
+            "Mỗi bộ xử lý chỉ có thể truy cập vào một vùng bộ nhớ riêng của bộ xử lý đó",
+            "Mỗi bộ xử lý đều có thể truy cập vào tất cả các bộ nhớ của bộ xử lý khác",
+            "Mỗi bộ xử lý không thể truy cập vào bộ nhớ của bộ xử lý khác"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Hình vẽ trên là theo mô hình song song nào?",
+        image: "images/39.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình chia sẻ bộ nhớ",
+            "Mô hình truyền thông điệp",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình vẽ trên là theo mô hình song song nào?",
+        image: "images/40.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình chia sẻ bộ nhớ",
+            "Mô hình truyền thông điệp",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình vẽ trên phát biểu nào đúng?",
+        image: "images/41.jpg", 
+        imageCaption: "",
+        options: [
+            "Chỉ có bộ xử lý 1 được phép truy cập vào bộ nhớ",
+            "Chỉ có bộ xử lý 2 được phép truy cập vào bộ nhớ",
+            "Chỉ có bộ xử lý 3 được phép truy cập vào bộ nhớ",
+            "Tất cả bộ xử lý đều được phép truy cập vào bộ nhớ"
+        ],
+        correctAnswer: 3
+    },
+
+    // Câu 41-50
+    {
+        question: "Hình vẽ trên phát biểu nào sai?",
+        image: "images/42.jpg", 
+        imageCaption: "",
+        options: [
+            "Các bộ xử lý không có không gian nhớ riêng",
+            "Các bộ xử lý đều có quyền truy cập vào bộ nhớ như nhau",
+            "Các bộ xử lý có không gian nhớ riêng",
+            "Tất cả bộ xử lý đều được phép truy cập vào bộ nhớ"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Tiêu chí nào không dùng để đánh giá thuật giải song song?",
+        options: [
+            "Các thông số về số bộ xử lý",
+            "Sơ đồ truyền thông",
+            "Thao tác I/O",
+            "Cấu trúc ổ đĩa cứng"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Ưu điểm nổi bật của xử lý song song là gì?",
+        options: [
+            "Thời gian xử lý công việc nhanh hơn, khối lượng công việc lớn hơn",
+            "Thời gian xử lý công việc chậm, khối lượng công việc nhỏ",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Một thời điểm có thể thực hiện được nhiều phép toán là đặc điểm của loại xử lý nào?",
+        options: [
+            "Xử lý tuần tự",
+            "Xử lý song song",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình SISD?",
+        options: [
+            "Có 1 CPU",
+            "Có 2 CPU",
+            "Có 3 CPU",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình SISD thứ tự thực hiện câu lệnh như thế nào?",
+        options: [
+            "Theo 1 thứ tự nhất định",
+            "Không theo thứ tự nào cả",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Phát biểu nào sai?",
+        options: [
+            "Mô hình SISD thực hiện theo 1 thứ tự nhất định",
+            "Mô hình SISD thực hiện không theo thứ tự nào cả",
+            "Mô hình SISD có một bộ xử lý",
+            "Mô hình SISD thực hiện một lệnh tại một thời điểm"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình trên thuộc loại mô hình nào?",
+        image: "images/49.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình SISD",
+            "Mô hình SIMD",
+            "Mô hình MISD",
+            "Mô hình MIMD"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình trên từ nào là ký hiệu của luồng lệnh?",
+        image: "images/50.jpg", 
+        imageCaption: "",
+        options: [
+            "Từ IS",
+            "Từ DS",
+            "Từ LM",
+            "Từ P1"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên từ nào là ký hiệu của luồng dữ liệu?",
+        image: "images/51.jpg", 
+        imageCaption: "",
+        options: [
+            "Từ IS",
+            "Từ DS",
+            "Từ LM",
+            "Từ P1"
+        ],
+        correctAnswer: 1
+    },
+
+    // Câu 51-60
+    {
+        question: "Mô hình trên từ nào là ký hiệu của bộ nhớ cục bộ?",
+        image: "images/52.jpg", 
+        imageCaption: "",
+        options: [
+            "Từ IS",
+            "Từ DS",
+            "Từ LM",
+            "Từ P1"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Mô hình trên từ nào là ký hiệu của bộ xử lý?",
+        image: "images/53.jpg", 
+        imageCaption: "",
+        options: [
+            "Từ IS",
+            "Từ DS",
+            "Từ LM",
+            "Từ P1"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Mô hình trên từ IS là viết tắt của từ nào?",
+        image: "images/54.jpg", 
+        imageCaption: "",
+        options: [
+            "Instruction Stream",
+            "Input System",
+            "Input Stream",
+            "Instruction System"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên từ DS là viết tắt của từ nào?",
+        image: "images/55.jpg", 
+        imageCaption: "",
+        options: [
+            "Data Stream",
+            "Data System",
+            "Diagram Stream",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên từ LM là viết tắt của từ nào?",
+        image: "images/56.jpg", 
+        imageCaption: "",
+        options: [
+            "Local Memory",
+            "Look Multiple",
+            "Local Multiple",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên từ P1, P2, ..., Pn là viết tắt của từ nào?",
+        image: "images/57.jpg", 
+        imageCaption: "",
+        options: [
+            "Processor",
+            "Procedure",
+            "Product",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Căn cứ vào yếu tố nào trong mô hình trên khẳng định đây là mô hình SIMD?",
+        image: "images/58.jpg", 
+        imageCaption: "",
+        options: [
+            "Ký hiệu IS, DS1, DS2, …, DSn",
+            "Ký hiệu CU, IS",
+            "Out put, Memory",
+            "Memory IS"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên thể hiện điều gì?",
+        image: "images/59.jpg", 
+        imageCaption: "",
+        options: [
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đơn luồng dữ liệu, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên là mô hình gì?",
+        image: "images/60.jpg", 
+        imageCaption: "",
+        options: [
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Single Data",
+            "Multiple Instruction, Multiple Data"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên thuộc loại mô hình nào?",
+        image: "images/61.jpg", 
+        imageCaption: "",
+        options: [
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Single Data",
+            "Multiple Instruction, Multiple Data"
+        ],
+        correctAnswer: 1
+    },
+
+    // Câu 61-70
+    {
+        question: "Mô hình trên có tên gọi là gì?",
+        image: "images/62.jpg", 
+        imageCaption: "",
+        options: [
+            "MISD",
+            "SISD",
+            "SIMD",
+            "MIMD"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình trên có nghĩa là gì?",
+        image: "images/63.jpg", 
+        imageCaption: "",
+        options: [
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đơn luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đa luồng dữ liệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Căn cứ vào yếu tố nào để xác định đây là mô hình đa luồng lệnh?",
+        image: "images/64.jpg", 
+        imageCaption: "",
+        options: [
+            "IS",
+            "CU",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Căn cứ vào yếu tố nào để xác định đây là mô hình đơn luồng dữ liệu?",
+        image: "images/65.jpg", 
+        imageCaption: "",
+        options: [
+            "IS",
+            "CU",
+            "DS",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Từ CU trong mô hình viết tắt của từ gì?",
+        image: "images/66.jpg", 
+        imageCaption: "",
+        options: [
+            "Control Unit",
+            "Control University",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên thuộc mô hình gì?",
+        image: "images/67.jpg", 
+        imageCaption: "",
+        options: [
+            "MISD",
+            "SISD",
+            "SIMD",
+            "MIMD"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình ảnh trên diễn tả điều gì?",
+        image: "images/68.jpg", 
+        imageCaption: "",
+        options: [
+            "Đa dòng lệnh, đơn dòng dữ liệu",
+            "Đơn dòng lệnh, đơn dòng dữ liệu",
+            "Đơn dòng lệnh, đa dòng dữ liệu",
+            "Đa dòng lệnh, đa dòng dữ liệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình ảnh trên viết tên gọi đầy đủ là gì?",
+        image: "images/69.jpg", 
+        imageCaption: "",
+        options: [
+            "Multiple Instruction, Multiple Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Multiple Data",
+            "Single Instruction, Single Data"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình MISD thực hiện theo nguyên lý gì?",
+        options: [
+            "Nguyên lý Pipeline",
+            "Nguyên lý thứ tự",
+            "Nguyên lý vét cạn thông minh",
+            "Nguyên lý tham lam"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Nguyên lý Pipeline là nguyên lý gì?",
+        options: [
+            "Là nguyên lý hình ống, dây chuyền",
+            "Là nguyên lý chọn một thứ tự hợp lý",
+            "Là nguyên lý giới hạn lại không gian tìm kiếm",
+            "Là nguyên lý ứng dụng tiêu chuẩn toàn cục theo tiêu chuẩn cục bộ"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 71-80
+    {
+        question: "Nguyên lý nào chia quá trình tính toán thành một số công đoạn nhỏ, giao cho nhiều bộ xử lý thực hiện trong các pha liên tiếp?",
+        options: [
+            "Nguyên lý pipeline",
+            "Nguyên lý vét cạn thông minh",
+            "Nguyên lý Greedy",
+            "Nguyên lý thứ tự"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình nào phức tạp nhất và phổ biến nhất?",
+        options: [
+            "Mô hình MIMD",
+            "Mô hình MISD",
+            "Mô hình SIMD",
+            "Mô hình SISD"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình MIMD thực hiện theo đặc điểm gì?",
+        options: [
+            "Mỗi bộ xử lý thực hiện một lệnh riêng trên một mục dữ liệu độc lập với các bộ xử lý khác",
+            "Mỗi bộ xử lý thực hiện một lệnh chung trên một mục dữ liệu độc lập với các bộ xử lý khác",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên là mô hình gì?",
+        image: "images/76.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình MIMD",
+            "Mô hình MISD",
+            "Mô hình SISD",
+            "Mô hình SIMD"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên là tên gọi là gì?",
+        image: "images/77.jpg", 
+        imageCaption: "",
+        options: [
+            "Multiple Instruction, Multiple Data",
+            "Single Instruction, Multiple Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Single Data"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên thực hiện như thế nào?",
+        image: "images/78.jpg", 
+        imageCaption: "",
+        options: [
+            "Đa luồng lệnh, đa luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đơn luồng dữ liệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên cụm từ: Data Input stream A nghĩa là gì?",
+        image: "images/79.jpg", 
+        imageCaption: "",
+        options: [
+            "Luồng dữ liệu vào A",
+            "Luồng dữ liệu ra A",
+            "Luồng lệnh vào A",
+            "Luồng lệnh ra A"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên cụm từ: Output stream A nghĩa là gì?",
+        image: "images/80.jpg", 
+        imageCaption: "",
+        options: [
+            "Luồng dữ liệu vào A",
+            "Luồng dữ liệu ra A",
+            "Luồng lệnh vào A",
+            "Luồng lệnh ra A"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên cụm từ: Instruction Stream A nghĩa là gì?",
+        image: "images/81.jpg", 
+        imageCaption: "",
+        options: [
+            "Luồng lệnh A",
+            "Luồng dữ liệu A",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong hình trên căn cứ vào đâu để xác định đa luồng lệnh?",
+        image: "images/82.jpg", 
+        imageCaption: "",
+        options: [
+            "Instruction Stream A, Instruction Stream B, Instruction Stream C",
+            "Data Input Stream A, Data Input Stream B, Data Input Stream C",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 81-90
+    {
+        question: "Trong hình trên căn cứ vào đâu để xác định đa luồng dữ liệu?",
+        image: "images/83.jpg", 
+        imageCaption: "",
+        options: [
+            "Instruction Stream A, Instruction Stream B, Instruction Stream C",
+            "Data Input Stream A, Data Input Stream B, Data Input Stream C",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên thuộc mô hình gì?",
+        image: "images/84.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình MIMD",
+            "Mô hình MISD",
+            "Mô hình SIMD",
+            "Mô hình SISD"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên tên gọi là gì?",
+        image: "images/85.jpg", 
+        imageCaption: "",
+        options: [
+            "Multiple Instruction, Multiple Data",
+            "Multiple Instruction, Single Data",
+            "Single Instruction, Multiple Data",
+            "Single Instruction, Single Data"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên có thực hiện theo cách thức nào gì?",
+        image: "images/86.jpg", 
+        imageCaption: "",
+        options: [
+            "Đa luồng lệnh, đa luồng dữ liệu",
+            "Đa luồng lệnh, đơn luồng dữ liệu",
+            "Đơn luồng lệnh, đa luồng dữ liệu",
+            "Đơn luồng lệnh, đơn luồng dữ liệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên tại một thời điểm thực hiện lệnh như thế nào?",
+        image: "images/87.jpg", 
+        imageCaption: "",
+        options: [
+            "Một mục dữ liệu được xử lý",
+            "Nhiều mục dữ liệu được xử lý",
+            "Cõui mục dữ liệu được xử lý",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên, một thời điểm thực hiện bao nhiêu lệnh?",
+        image: "images/88.jpg", 
+        imageCaption: "",
+        options: [
+            "Một lệnh",
+            "Nhiều lệnh",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên phát biểu nào sai?",
+        image: "images/89.jpg", 
+        imageCaption: "",
+        options: [
+            "Một thời điểm các bộ xử lý một mục dữ liệu",
+            "Một thời điểm các bộ xử lý nhiều mục dữ liệu",
+            "Các bộ xử lý thực hiện các lệnh khác nhau",
+            "Mỗi bộ xử lý thực hiện xử lý các dữ liệu khác với bộ xử lý khác"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên phát biểu nào đúng?",
+        image: "images/90.jpg", 
+        imageCaption: "",
+        options: [
+            "Các bộ xử lý thực hiện một lệnh giống nhau tại một thời điểm",
+            "Các bộ xử lý thực hiện xử lý một một mục dữ liệu giống nhau tại một thời điểm",
+            "Mỗi bộ xử lý thực hiện xử lý các dữ liệu khác với bộ xử lý khác",
+            "Các bộ xử lý thực hiện một lệnh và xử lý một mục dữ liệu giống nhau"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Máy P-RAM là gì?",
+        options: [
+            "Máy tính truy cập ngẫu nhiên song song",
+            "Máy tính tuần tự",
+            "Máy server",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Máy P-RAM viết tắt của từ gì?",
+        options: [
+            "Parallel Random Access Machine",
+            "Parallel Read Access Machine",
+            "Processor Random Access Machine",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 91-100
+    {
+        question: "Thuật ngữ nào là tên gọi của máy tính ngẫu nhiên song song?",
+        options: [
+            "Parallel Random Access Machine",
+            "Parallel Read Access Machine",
+            "Processor Random Access Machine",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Cụm từ Parallel Random Access Machine là tên gọi của máy nào?",
+        options: [
+            "Máy tính ngẫu nhiên song song",
+            "Máy chủ",
+            "Máy khách",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Đầu ra của giai đoạn này có thể đầu vào của giai đoạn tiếp theo là đặc điểm của nguyên lý nào?",
+        options: [
+            "Nguyên lý hình ống, dây chuyền",
+            "Nguyên lý thứ tự",
+            "Nguyên lý tham lam",
+            "Nguyên lý vét cạn thông minh"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Các giai đoạn thực hiện khác nhau của mỗi câu lệnh có thể thực hiện gối đầu nhau?",
+        options: [
+            "Nguyên lý hình ống, dây chuyền",
+            "Nguyên lý thứ tự",
+            "Nguyên lý tham lam",
+            "Nguyên lý vét cạn thông minh"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hệ điều hành đa nhiệm thường giải quyết như thế nào?",
+        options: [
+            "Trong cùng một khoảng thời gian, có nhiều tiến trình cùng truy cập vào dữ liệu từ thiết bị vào/ra chung",
+            "Trong cùng một khoảng thời gian, có một tiến trình truy cập vào dữ liệu từ thiết bị vào/ra chung",
+            "Theo nguyên lý tham lam",
+            "Theo nguyên lý vét cạn thông minh"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Điều cần lưu ý khi phát triển những thuật toán cho các máy tính song song tổng quát?",
+        options: [
+            "Không bị giới hạn về số lượng bộ xử lý",
+            "Bị giới hạn bởi số lượng bộ xử lý",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Điều cần lưu ý khi phát triển những thuật toán cho các máy tính song song tổng quát?",
+        options: [
+            "Thực hiện một thuật giải tuần tự tối ưu",
+            "Không quan tâm đến thuật giải tuần tự",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Điều cần lưu ý khi phát triển những thuật toán cho các máy tính song song tổng quát?",
+        options: [
+            "Mọi vị trí của bộ nhớ đều truy cập được bởi bất kỳ bộ xử lý nào",
+            "Mọi vị trí của bộ nhớ đều truy cập được bởi một bộ xử lý",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Điều cần lưu ý khi phát triển những thuật toán cho các máy tính song song tổng quát?",
+        options: [
+            "Các BXL có thể đọc bất kỳ một vị trí nào của bộ nhớ",
+            "Các BXL có thể đọc một vị trí của bộ nhớ",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên thuộc loại nào?",
+        image: "images/102.jpg", 
+        imageCaption: "",
+        options: [
+            "Hình ống theo đơn vị số học",
+            "Hình ống theo đơn vị câu lệnh",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 101-110
+    {
+        question: "Hình trên thuộc loại nào?",
+        image: "images/103.jpg", 
+        imageCaption: "",
+        options: [
+            "Hình ống theo đơn vị số học",
+            "Hình ống theo đơn vị câu lệnh",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên thực hiện theo nguyên lý nào?",
+        image: "images/104.jpg", 
+        imageCaption: "",
+        options: [
+            "Nguyên lý hình ống",
+            "Nguyên lý Greedy",
+            "Nguyên lý thứ tự",
+            "Nguyên lý vét cạn thông minh"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên xây dựng theo công thức nào?",
+        image: "images/105.jpg", 
+        imageCaption: "",
+        options: [
+            "S in = S out + a[i]",
+            "S = S + a[i]",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên xây dựng theo cách thức nào?",
+        image: "images/106.jpg", 
+        imageCaption: "",
+        options: [
+            "Đầu ra của bộ xử lý này là đầu vào của bộ xử lý kia",
+            "Đầu ra của bộ xử lý này không là đầu vào của bộ xử lý kia",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên là bộ nhớ song song nào?",
+        image: "images/107.jpg", 
+        imageCaption: "",
+        options: [
+            "Bộ nhớ kết hợp",
+            "Bộ nhớ truy cập ngẫu nhiên song song",
+            "Bộ nhớ chia sẻ",
+            "Bộ nhớ phân tán"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mỗi ô nhớ của bộ nhớ kết hợp gồm mấy tín hiệu đầu vào?",
+        image: "images/108.jpg", 
+        imageCaption: "",
+        options: [
+            "4 tín hiệu",
+            "3 tín hiệu",
+            "2 tín hiệu",
+            "1 tín hiệu"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mỗi ô nhớ của bộ nhớ kết hợp gồm mấy tín hiệu đầu ra?",
+        image: "images/109.jpg", 
+        imageCaption: "",
+        options: [
+            "4 tín hiệu",
+            "3 tín hiệu",
+            "2 tín hiệu",
+            "1 tín hiệu"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Hình trên là loại bộ nhớ nào của máy tính song song?",
+        image: "images/110.jpg", 
+        imageCaption: "",
+        options: [
+            "Bộ nhớ kết hợp",
+            "Bộ nhớ chia sẻ",
+            "Bộ nhớ truy cập ngẫu nhiên song song",
+            "Bộ nhớ phân tán"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Đặc điểm của bộ nhớ chia sẻ của máy tính song song?",
+        options: [
+            "Dung lượng lớn",
+            "Dung lượng nhỏ",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Đặc điểm của bộ nhớ chia sẻ của máy tính song song?",
+        options: [
+            "Những thay đổi nội dung ô nhớ được thực hiện bởi một bộ xử lý nào đó sẽ được nhìn thấy bởi các bộ xử lý khác",
+            "Những thay đổi nội dung ô nhớ được thực hiện bởi một bộ xử lý nào đó sẽ không được nhìn thấy bởi các bộ xử lý khác",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 111-120
+    {
+        question: "Đặc điểm của bộ nhớ chia sẻ của máy tính song song?",
+        image: "images/113.jpg", 
+        imageCaption: "",
+        options: [
+            "Các bộ xử lý đều có thể truy cập vào bộ nhớ (Share memory)",
+            "Chỉ một bộ xử lý được truy cập vào bộ nhớ (Share memory)",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên là loại bộ nhớ nào của máy tính song song?",
+        image: "images/114.jpg", 
+        imageCaption: "",
+        options: [
+            "Bô nhớ kết hợp",
+            "Bộ nhớ chia sẻ",
+            "Bộ nhớ phân tán",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Đặc điểm bộ nhớ phân tán?",
+        options: [
+            "Các bộ xử lý đều có bộ nhớ riêng",
+            "Các bộ xử lý đều có bộ nhớ chung",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Đặc điểm bộ nhớ phân tán?",
+        options: [
+            "Địa chỉ bộ nhớ của một BXL nào đó không được biết bởi BXL khác",
+            "Địa chỉ bộ nhớ của một BXL nào đó được biết bởi BXL khác",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên thuộc loại bộ nhớ nào của máy tính song song?",
+        image: "images/117.jpg", 
+        imageCaption: "",
+        options: [
+            "Bộ nhớ lai",
+            "Bộ nhớ phân tán",
+            "Bộ nhớ chia sẻ",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong bộ nhớ lai của máy tính song song?",
+        image: "images/118.jpg", 
+        imageCaption: "",
+        options: [
+            "Các bộ xử lý có một vùng nhớ chung",
+            "Mỗi bộ xử lý có một vùng nhớ riêng",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Trong bộ nhớ lai của máy tính song song?",
+        options: [
+            "Có đường mạng kết nối giữa các bộ xử lý",
+            "Không có đường mạng kết nối giữa các bộ xử lý",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong bộ nhớ lai của máy tính song song?",
+        options: [
+            "Kết hợp giữa kiến trúc chia sẻ bộ nhớ chung và bộ nhớ phân tán.",
+            "Không kết hợp giữa kiến trúc chia sẻ bộ nhớ chung và bộ nhớ phân tán.",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mạng liên kết tĩnh là gì?",
+        options: [
+            "Là mạng các thành phần của hệ thống máy tính, trong đó các BXL, bộ nhớ được liên kết với nhau một cách cố định, không thay đổi được",
+            "Là mạng các thành phần của hệ thống máy tính, trong đó các BXL, bộ nhớ được liên kết với nhau một cách cố định, có thể thay đổi được",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mạng liên kết động là gì?",
+        options: [
+            "Là mạng các thành phần của hệ thống máy tính, trong đó các BXL, bộ nhớ được liên kết với nhau một cách cố định, không thay đổi được",
+            "Là mạng các thành phần của hệ thống máy tính, trong đó các BXL, bộ nhớ được liên kết với nhau một cách cố định, có thể thay đổi được",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+
+    // Câu 121-130
+    {
+        question: "Mạng các thành phần của hệ thống máy tính, trong đó các BXL, bộ nhớ được liên kết với nhau một cách cố định, không thay đổi được?",
+        options: [
+            "Mạng liên kết động",
+            "Mạng liên kết tĩnh",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên là mô hình nào?",
+        image: "images/124.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình mạng liên kết tuyến tính",
+            "Mô hình mạng kết vòng",
+            "Mô hình mạng liên kết lưới 2 chiều",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+   
+
+    {
+        question: "124Mô hình mạng liên kết tuyến tính có đặc điểm gì?",
+        options: [
+            "Một đường truyền lần lượt chạy qua các bộ xử lý",
+            "Không có đường truyền chạy qua các bộ xử lý",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình mạng liên kết tuyến tính có đặc điểm gì?",
+        options: [
+            "Dữ liệu gửi từ bộ xử lý này tới bộ xử lý kia phải lần lượt đi qua các bộ xử lý trung gian",
+            "Dữ liệu gửi từ bộ xử lý này tới bộ xử lý kia không qua các bộ xử lý trung gian",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình mạng liên kết tuyến tính mạng đơn có đặc điểm gì?",
+        options: [
+            "Thông tin có thể chạy trên đường truyền theo một chiều",
+            "Thông tin có thể chạy trên đường truyền theo hai chiều",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình mạng liên kết tuyến tính mạng kép có đặc điểm gì?",
+        options: [
+            "Thông tin có thể chạy trên đường truyền theo một chiều",
+            "Thông tin có thể chạy trên đường truyền theo hai chiều",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên là mô hình nào?",
+        image: "images/131.jpg", 
+        imageCaption: "",
+        options: [
+            "Mô hình mạng liên kết tuyến tính",
+            "Mô hình mạng liên kết vòng",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình mạng liên kết vòng có đặc điểm gì?",
+        options: [
+            "Một đường truyền lần lượt chạy qua các bộ xử lý",
+            "Không có đường truyền lần lượt chạy qua các bộ xử lý",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 131-140
+  
+    {
+        question: "Mô hình mạng liên kết vòng có đặc điểm gì?",
+        options: [
+            "Sự truyền thông trong mạng liên kết vòng, nhất là giữa những BXL ở xa nhau thì cũng vẫn bị trễ",
+            "Sự truyền thông trong mạng liên kết vòng, nhất là giữa những BXL ở xa nhau thì cũng không bị trễ",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình mạng liên kết vòng có đặc điểm gì?",
+        options: [
+            "Tất cả đều đúng",
+            "Sự truyền thông trong mạng liên kết vòng, nhất là giữa những BXL ở xa nhau thì cũng vẫn bị trễ",
+            "Sự trao đổi giữa các bộ xử lý có thể thực hiện theo một chiều gọi là mạng đơn",
+            "Sự trao đổi giữa các bộ xử lý có thể thực hiện theo hai chiều gọi là mạng kép"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên thuộc mô hình mạng liên kết gì?",
+        image: "images/136.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết lưới hai chiều",
+            "Mạng liên kết vòng",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình 1 thuộc mô hình mạng liên kết gì?",
+        image: "images/137.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết lưới không quay vòng",
+            "Mạng liên kết lưới quay vòng",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình 2 thuộc mô hình mạng liên kết gì?",
+        image: "images/138.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết lưới không quay vòng",
+            "Mạng liên kết lưới quay vòng",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình 3 thuộc mô hình mạng liên kết gì?",
+        image: "images/139.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết lưới không quay vòng",
+            "Mạng liên kết lưới quay vòng",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hình trên thuộc mô hình mạng liên kết gì?",
+        image: "images/140.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết xáo trộn hoàn hảo quay vòng",
+            "Mạng liên kết hình hộp",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Hình trên thuộc mô hình mạng liên kết gì?",
+        image: "images/141.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết xáo trộn hoàn hảo quay vòng",
+            "Mạng liên kết hình hộp",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Đặc điểm của mạng liên kết nhị phân?",
+        image: "images/142.jpg", 
+        imageCaption: "",
+        options: [
+            "Mỗi BXL là một node của cây, có N=2k-1 nodes",
+            "Hai BXL là một node của cây, có N=2k-1 nodes",
+            "Ba BXL là một node của cây, có N=2k-1 nodes",
+            "Bốn BXL là một node của cây, có N=2k-1 nodes"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 141-150
+    {
+        question: "Hình trên thuộc mô hình mạng liên kết gì?",
+        image: "images/143.jpg", 
+        imageCaption: "",
+        options: [
+            "Mạng liên kết xáo trộn hoàn hảo quay vòng",
+            "Mạng liên kết hình hộp",
+            "Mạng liên kết tuyến tính",
+            "Mạng liên kết nhị phân"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Trong thuật giải song song thuật ngữ Speedup là?",
+        options: [
+            "Hệ số tăng tốc",
+            "Hiệu quả",
+            "Tính quy mô",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong thuật giải song song thuật ngữ 'Efficiency' là?",
+        options: [
+            "Hệ số tăng tốc",
+            "Hiệu quả",
+            "Tính quy mô",
+            "giá"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Trong thuật giải song song Speedup được tính thế nào?",
+        options: [
+            "Là tỷ số giữa thời gian thực hiện trong tình huống xấu nhất của thuật toán tuần tự tốt nhất và thời gian thực hiện cũng công việc đó của thuật toán song song",
+            "Là tỷ số giữa thời gian thực hiện cũng công việc đó của thuật toán song song và thời gian thực hiện trong tình huống xấu nhất của thuật toán tuần tự tốt nhất",
+            "Tất cả đều sai",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong thuật giải song song thuật ngữ Flop là?",
+        options: [
+            "Là đơn vị đo tốc độ cua máy tính song song",
+            "Là tỷ số giữa thời gian thực hiện cũng công việc đó của thuật toán song song và thời gian thực hiện trong tình huống xấu nhất của thuật toán tuần tự tốt nhất",
+            "Tất cả đều sai",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong thuật giải song song thuật ngữ Scalability là gì?",
+        options: [
+            "Tính quy mô",
+            "Tính hiệu quả",
+            "Tất cả đều sai",
+            "Đơn vị đo tốc độ máy tính song song"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong thuật giải song song: Giá (cost) của quá trình tính toán trên PRAM là gì?",
+        options: [
+            "Giá = Độ phức tạp tính toán x Số lượng bộ xử lý tham gia tính",
+            "Giá = Độ phức tạp tính toán + Số lượng bộ xử lý tham gia tính",
+            "Giá = Độ phức tạp tính toán - Số lượng bộ xử lý tham gia tính",
+            "Giá = Độ phức tạp tính toán * Số lượng bộ xử lý tham gia tính"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Trong thuật giải song song: Giá (cost) của quá trình tính toán trên PRAM là gì?",
+        options: [
+            "Giá = Độ phức tạp tính toán x Số lượng bộ xử lý tham gia tính",
+            "Giá = Độ phức tạp tính toán / Số lượng bộ xử lý tham gia tính",
+            "Giá = Độ phức tạp tính toán + Số lượng bộ xử lý tham gia tính",
+            "Giá = Độ phức tạp tính toán * Số lượng bộ xử lý tham gia tính"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Giả sử có 3 bộ xử lý tham gia chương trình song song, trong đó: bộ xử lý P1 thực hiện 5 thao tác, P2 thực hiện 4 thao tác, P3 thực hiện 8 thao tác, giá bằng bao nhiêu?",
+        options: [
+            "17",
+            "5",
+            "8",
+            "24"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Độ phức tạp tính toán hay thời gian tính toán là gì?",
+        options: [
+            "Số bước cần thực hiện các thao tác",
+            "Số lượng bộ xử lý tham gia tính toán",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Thuật toán song song tối ưu về chi phí là gì?",
+        options: [
+            "Là thuật toán có chi phí (độ phức tạp, thời gian tính) tương đương với thuật toán tuần tự tốt nhất.",
+            "Là thuật toán có chi phí (độ phức tạp, thời gian tính) tương đương với thuật toán tuần tự xấu nhất.",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 151-160
+    {
+        question: "Cơ chế dữ liệu song song là gì?",
+        options: [
+            "Nhiều bộ xử lý đồng thời áp dụng cùng một thao tác lên nhiều mục dữ liệu khác nhau",
+            "Nhiều bộ xử lý đồng thời áp dụng nhiều thao tác lên nhiều mục dữ liệu khác nhau",
+            "Nhiều bộ xử lý đồng thời áp dụng nhiều thao tác khác nhau lên các thành phần khác nhau của một mục dữ liệu",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Cơ chế dây chuyền là gì?",
+        options: [
+            "Nhiều bộ xử lý đồng thời áp dụng cùng một thao tác lên nhiều mục dữ liệu khác nhau",
+            "Nhiều bộ xử lý đồng thời áp dụng nhiều thao tác lên nhiều mục dữ liệu khác nhau",
+            "Nhiều bộ xử lý đồng thời áp dụng nhiều thao tác khác nhau lên các thành phần khác nhau của một mục dữ liệu",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Một kiến trúc máy tính song song như thế nào gọi là có tính quy mô?",
+        options: [
+            "Khi kích thước bài toán tăng lên như bằng cách tăng số bộ xử lý.",
+            "Khi kích thước bài toán tăng lên như không tăng số bộ xử lý.",
+            "Khi kích thước bài toán tăng lên như bằng cách giảm số bộ xử lý.",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Một kiến trúc máy tính song song như thế nào gọi là có tính quy mô?",
+        options: [
+            "Có thể làm cho phần việc của mỗi bộ xử lý không thay đổi.",
+            "Có thể làm cho phần việc của mỗi bộ xử lý thay đổi.",
+            "Có thể làm cho phần việc của mỗi bộ xử lý nhiều lên.",
+            "Có thể làm cho phần việc của mỗi bộ xử lý ít đi."
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Để chương trình xử lý song song chạy đạt hiệu quả cao nhất cần bao nhiêu CPU là đủ?",
+        options: [
+            "Cần có một số lượng CPU nhất định",
+            "Cần có số lượng CPU càng nhiều chương trình càng hiệu quả",
+            "Chỉ cần một CPU",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Người dùng thường ngày tìm kiếm thông tin trên mạng internet thông qua Google Search sử dụng công nghệ gì?",
+        options: [
+            "Cloud computing",
+            "Grid computing",
+            "Điện toán mạng lưới",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Grid computing thực hiện xử lý song song như thế nào?",
+        options: [
+            "Một nhóm máy chủ mà trên đó nhiệm vụ lớn có thể được chia thành những nhiệm vụ nhỏ để chạy song song.",
+            "Chỉ có một máy chủ mà trên đó nhiệm vụ lớn có thể được chia thành những nhiệm vụ nhỏ để chạy song song.",
+            "Một nhóm máy chủ mà trên đó nhiệm vụ lớn không chia thành những nhiệm vụ nhỏ.",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Chương trình tìm phần tử lớn nhất trên ma trận viết bằng ngôn ngữ lập trình MPI thực hiện như thế nào?",
+        options: [
+            "Có sử dụng truyền thông điệp giữa các bộ xử lý",
+            "Không sử dụng truyền thông điệp giữa các bộ xử lý",
+            "Sử dụng bộ nhớ chia sẻ",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình Pthread thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình OpenMP thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 161-170
+    {
+        question: "Lập trình MPI thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Lập trình PVM thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 1
+    },
+     {
+        question: "Lập trình MPI thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Lập trình Pthread thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Mô hình chia sẻ bộ nhớ",
+            "Mô hình truyền thông điệp",
+            "Mô hình kết hợp",
+            "Mô hình hướng đối tượng trên máy chủ"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình OpenMP thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Mô hình chia sẻ bộ nhớ",
+            "Mô hình truyền thông điệp",
+            "Mô hình kết hợp",
+            "Mô hình hướng đối tượng trên máy chủ"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình PVM thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Mô hình chia sẻ bộ nhớ",
+            "Mô hình truyền thông điệp",
+            "Mô hình kết hợp",
+            "Mô hình hướng đối tượng trên máy chủ"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Lập trình MPI thuộc loại kiến trúc bộ nhớ nào của máy tính song song?",
+        options: [
+            "Mô hình chia sẻ bộ nhớ",
+            "Mô hình truyền thông điệp",
+            "Mô hình kết hợp",
+            "Mô hình hướng đối tượng trên máy chủ"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Shared Memory Model gồm có ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình MPI, lập trình Pthread",
+            "Lập trình OpenMP, lập trình PVM"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Message Passing Model gồm có ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình MPI, lập trình Pthread",
+            "Lập trình OpenMP, lập trình PVM"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Hybrid Model gồm có các ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình OpenMP, lập trình MPI",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Mô hình bộ nhớ chia sẻ gồm có các ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình OpenMP, lập trình MPI",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 171-180
+    {
+        question: "Mô hình truyền thông điệp gồm có các ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình OpenMP, lập trình MPI",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Mô hình bộ nhớ chia sẻ gồm có các ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình OpenMP, lập trình MPI",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình bộ nhớ lai gồm có các ngôn ngữ lập trình nào?",
+        options: [
+            "Lập trình Pthread, lập trình OpenMP",
+            "Lập trình MPI, lập trình PVM",
+            "Lập trình OpenMP, lập trình MPI",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "UMA (Uniform Memory Access) thuộc loại bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Non Uniform Memory Access (NUMA) thuộc loại bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Bộ nhớ chia sẻ tập trung thuộc loại bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Bộ nhớ chia sẻ phân tán thuộc loại bộ nhớ nào của máy tính song song?",
+        options: [
+            "Shared Memory Model",
+            "Message Passing Model",
+            "Hybrid Model",
+            "Object and Service Oriented Models"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "UMA (Uniform Memory Access) thuộc loại bộ nhớ nào của máy tính song song?",
+        options: [
+            "Mô hình bộ nhớ chia sẻ",
+            "Mô hình truyền thông điệp",
+            "Mô hình lai",
+            "Mô hình hướng đối tượng trên máy chủ"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Non Uniform Memory Access (NUMA) thuộc loại bộ nhớ nào của máy tính song song?",
+        options: [
+            "Mô hình bộ nhớ chia sẻ",
+            "Mô hình truyền thông điệp",
+            "Mô hình lai",
+            "Mô hình hướng đối tượng trên máy chủ"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Non Uniform Memory Access (NUMA) là gì?",
+        options: [
+            "Bộ nhớ chia sẻ tập trung",
+            "Bộ nhớ chia sẻ không tập trung",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "UMA (Uniform Memory Access) là gì?",
+        options: [
+            "Bộ nhớ chia sẻ tập trung",
+            "Bộ nhớ chia sẻ không tập trung",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    // Câu 181-190
+    {
+        question: "Nhược điểm của bộ nhớ chia sẻ là gì?",
+        options: [
+            "Khó mở rộng bộ nhớ và CPU",
+            "Không gian địa chỉ toàn cục cho phép việc sử dụng bộ nhớ trở nên thân thiện, dễ dàng hơn",
+            "Việc chia sẻ dữ liệu giữa các tác vụ nhanh và dễ dàng hơn",
+            "Tất cả đều đúng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Khi phát triển những thuật toán cho các MTSS tổng quát, Exclusive Read + Exclusive Write là gì?",
+        options: [
+            "Loại trừ vấn đề xung đột đọc/ghi",
+            "Cho phép đọc đồng thời, nhưng không cho phép xung đột khi ghi",
+            "Cho phép đọc, ghi đồng thời",
+            "Cho phép ghi đồng thời, nhưng không cho phép xung đột khi đọc"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Khi phát triển những thuật toán cho các MTSS tổng quát, Concurrent Read + Exclusive Write là gì?",
+        options: [
+            "Loại trừ vấn đề xung đột đọc/ghi",
+            "Cho phép đọc đồng thời, nhưng không cho phép xung đột khi ghi",
+            "Cho phép đọc, ghi đồng thời",
+            "Cho phép ghi đồng thời, nhưng không cho phép xung đột khi đọc"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Khi phát triển những thuật toán cho các MTSS tổng quát, Concurrent Read + Concurrent Write là gì?",
+        options: [
+            "Loại trừ vấn đề xung đột đọc/ghi",
+            "Cho phép đọc đồng thời, nhưng không cho phép xung đột khi ghi",
+            "Cho phép đọc, ghi đồng thời",
+            "Cho phép ghi đồng thời, nhưng không cho phép xung đột khi đọc"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Khi phát triển những thuật toán cho các MTSS tổng quát, điều kiện nào loại trừ vấn đề xung đột đọc/ghi",
+        options: [
+            "Exclusive Read + Exclusive Write",
+            "Concurrent Read + Exclusive Write",
+            "Concurrent Read + Concurrent Write",
+            "Exclusive Read + Concurrent Write"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Khi phát triển những thuật toán cho các MTSS tổng quát, điều kiện nào cho phép đọc đồng thời, nhưng không cho phép xung đột khi ghi",
+        options: [
+            "Exclusive Read + Exclusive Write",
+            "Concurrent Read + Exclusive Write",
+            "Concurrent Read + Concurrent Write",
+            "Exclusive Read + Concurrent Write"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Khi phát triển những thuật toán cho các MTSS tổng quát, điều kiện nào cho phép đọc, ghi đồng thời",
+        options: [
+            "Exclusive Read + Exclusive Write",
+            "Concurrent Read + Exclusive Write",
+            "Concurrent Read + Concurrent Write",
+            "Exclusive Read + Concurrent Write"
+        ],
+        correctAnswer: 2
+    },
+    
+    {
+        question: "Lập trình Pthread Posix theo hình thức nào",
+        options: [
+            "Lập trình theo luồng",
+            "Lập trình truyền thông điệp",
+            "Lập trình theo luồng và truyền thông điệp",
+            "Không theo lập trình luồng và không theo hình thức truyền thông điệp"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình OpenMP theo hình thức nào",
+        options: [
+            "Lập trình theo luồng",
+            "Lập trình truyền thông điệp",
+            "Lập trình theo luồng và truyền thông điệp",
+            "Không theo lập trình luồng và không truyền thông điệp"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình MPI theo hình thức nào",
+        options: [
+            "Lập trình theo luồng",
+            "Lập trình truyền thông điệp",
+            "Lập trình theo luồng và truyền thông điệp",
+            "Không theo lập trình luồng và không truyền thông điệp"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Lập trình PVM theo hình thức nào",
+        options: [
+            "Lập trình theo luồng",
+            "Lập trình truyền thông điệp",
+            "Lập trình theo luồng và truyền thông điệp",
+            "Không theo lập trình luồng và không truyền thông điệp"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Đâu không phải lập trình song song",
+        options: [
+            "Lập trình Pthread Posix",
+            "Lập trình MPI",
+            "Lập trình OpenMP",
+            "Csharp"
+        ],
+        correctAnswer: 3
+    },
+    {
+        question: "Lập trình Pthread Posix có thể chạy trên môi trường nào",
+        options: [
+            "VC++6.0",
+            "Pascal",
+            "Turbo C++",
+            "Prolog"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình Pthread Posix, sau khi viết xong chương trình muốn chạy chương trình cần cấu hình trong Project trong VC++, gõ nội dung gì vào Object/library modules",
+        options: [
+            "Pthread.lib",
+            "Pthread.h",
+            "PthreadVC.h",
+            "PthreadVC.lib"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Lập trình Pthread Posix, sau khi viết xong chương trình muốn chạy chương trình cần cấu hình trong Project trong VC++ như thế nào?",
+        options: [
+            "Chọn Project → Settings → Link",
+            "Chọn Project → Link",
+            "Settings → Link",
+            "Project → Option"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Tên gọi nào dưới đây dùng để lập trình song song?",
+        options: [
+            "Prolog",
+            "VB.Net",
+            "Csharp",
+            "Pthread Posix"
+        ],
+        correctAnswer: 3
+    },
+
+    // Câu 201-210
+    {
+        question: `Cho đoạn lệnh sau:
+
+for (i = 0; i < nthreads; i++)
+    pthread_join(threads[i], NULL);
+
+Hàm pthread_join(threads[i], NULL) dùng để làm gì?`,
+    options: [
+        "Thu hồi và kết thúc Thread",
+        "Kết nối Thread",
+        "Khởi tạo Thread",
+        "Khai báo Thread"
+    ],
+        correctAnswer: 0
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Đâu là một định danh ID duy nhất cho thread mới?`,
+    options: [
+        "thread",
+        "attr",
+        "start_routine",
+        "arg"
+    ],
+        correctAnswer: 0
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Đâu là địa chỉ của chương trình con mà chúng ta cần chạy trong thread mới?`,
+    options: [
+        "thread",
+        "attr",
+        "start_routine",
+        "arg"
+    ],
+        correctAnswer: 2
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Đâu là một tham số của chương trình con?`,
+    options: [
+        "thread",
+        "attr",
+        "start_routine",
+        "arg"
+    ],
+        correctAnswer: 3
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Giá trị nào là tham số của thread mới?`,
+    options: [
+        "thread",
+        "attr",
+        "start_routine",
+        "arg"
+    ],
+        correctAnswer: 1
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Khai báo thread để làm gì?`,
+    options: [
+        "Một định danh ID duy nhất cho thread mới",
+        "Lưu trữ các tham số (thuộc tính) của thread mới",
+        "Địa chỉ của chương trình con mà chúng ta cần chạy trong thread mới",
+        "Tham số của chương trình con"
+    ],
+        correctAnswer: 0
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Khai báo start_routine để làm gì?`,
+    options: [
+        "Một định danh ID duy nhất cho thread mới",
+        "Lưu trữ các tham số (thuộc tính) của thread mới",
+        "Địa chỉ của chương trình con mà chúng ta cần chạy trong thread mới",
+        "Tham số của chương trình con"
+    ],
+        correctAnswer: 2
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Khai báo arg để làm gì?`,
+    options: [
+        "Một định danh ID duy nhất cho thread mới",
+        "Lưu trữ các tham số (thuộc tính) của thread mới",
+        "Địa chỉ của chương trình con mà chúng ta cần chạy trong thread mới",
+        "Tham số của chương trình con"
+    ],
+        correctAnswer: 3
+    },
+    {
+        question: `Trong cú pháp hàm sau:
+
+int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);
+
+Khai báo attr để làm gì?`,
+    options: [
+        "Một định danh ID duy nhất cho thread mới",
+        "Lưu trữ các tham số (thuộc tính) của thread mới",
+        "Địa chỉ của chương trình con mà chúng ta cần chạy trong thread mới",
+        "Tham số của chương trình con"
+    ],
+        correctAnswer: 1
+    },
+    {
+        question: "Lệnh nào để tạo ra Thread mới?",
+        options: [
+            "threads = new pthread_t[nthreads];",
+            "pthread_create(threads + i, NULL, worker, NULL);",
+            "pthread_join(threads[i], NULL);",
+            "pthread_mutex_destroy(&mut);"
+        ],
+        correctAnswer: 1
+    },
+
+    // Câu 211-220
+    {
+        question: "Lệnh nào để thu hồi và kết thúc Thread?",
+        options: [
+            "threads = new pthread_t[nthreads];",
+            "pthread_create(threads + i, NULL, worker, NULL);",
+            "pthread_join(threads[i], NULL);",
+            "pthread_mutex_destroy(&mut);"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Trong lập trình đa luồng?",
+        options: [
+            "Các thread có thể được tạo ra hoặc hủy bỏ, nhưng chương trình chính sẽ vẫn hiện diện để cung cấp các tài nguyên chia sẻ cần thiết cho đến khi ứng dụng kết thúc.",
+            "Các thread có thể được tạo ra không thể hủy bỏ.",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+nrow = 0;
+while (nrow < P)
+{
+    int oldrow;
+    for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+    {
+        int j; int t = 0;
+        for (j = 0; j < N; j++)
+            t += A[oldrow * N + j] * B[j];
+        C[oldrow] = t;
+    }
+    nrow++;
+}
+
+Biến nào chạy từ tiến trình đầu đến tiến trình cuối?`,
+    options: [
+        "nrow",
+        "oldrow",
+        "j",
+        "t"
+    ],
+        correctAnswer: 0
+    },
+    {
+        question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+nrow = 0;
+while (nrow < P)
+{
+    int oldrow;
+    for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+    {
+        int j; int t = 0;
+        for (j = 0; j < N; j++)
+            t += A[oldrow * N + j] * B[j];
+        C[oldrow] = t;
+    }
+    nrow++;
+}
+
+Biến nào chạy từ phần tử đầu đến phần tử cuối trong mỗi tiến trình?`,
+    options: [
+        "nrow",
+        "oldrow",
+        "j",
+        "t"
+    ],
+        correctAnswer: 1
+    },
+    {
+        question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+nrow = 0;
+while (nrow < P)
+{
+    int oldrow;
+    for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+    {
+        int j; int t = 0;
+        for (j = 0; j < N; j++)
+            t += A[oldrow * N + j] * B[j];
+        C[oldrow] = t;
+    }
+    nrow++;
+}
+
+Đoạn lệnh trên thực hiện song song hóa như thế nào?`,
+    options: [
+        "Đồng thời từng dòng của ma trận nhân với véc tơ",
+        "Đồng thời từng đoạn của dòng ma trận nhân với các tọa độ của véc tơ",
+        "Tất cả đều đúng",
+        "Tất cả đều sai"
+    ],
+        correctAnswer: 1
+    },
+    {
+        question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+nrow = 0;
+while (nrow < P)
+{
+    int oldrow;
+    for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+    {
+        int j; int t = 0;
+        for (j = 0; j < N; j++)
+            t += A[oldrow * N + j] * B[j];
+        C[oldrow] = t;
+    }
+    nrow++;
+}
+
+Biến nào dùng để lưu tọa độ véc tơ kết quả?`,
+    options: [
+        "Biến t",
+        "Biến j",
+        "Biến P",
+        "Biến nrow"
+    ],
+        correctAnswer: 0
+    },
+    {
+        question: "Thuật toán sắp xếp theo kiểu đếm, sắp xếp mảng a[N] tăng dần thực hiện thế nào?",
+        options: [
+            "Với mỗi phần tử của mảng A, đếm số phần tử nhỏ hơn nó, sau đó đặt đúng vị trí ở mảng B",
+            "Phân làm các đoạn nhỏ sau đó sắp xếp trong từng đoạn",
+            "Đổi chỗ 2 phần tử kế cận",
+            "Đếm số phần tử sau đó đổi chỗ giữa phần tử đầu và phần tử cuối"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: "Thuật toán sắp xếp theo kiểu đếm, sắp xếp mảng a[N] tăng dần thực hiện, có n bộ xử lý thực hiện song song hóa thế nào?",
+        options: [
+            "Mỗi bộ xử lý được giao một phần tử trong mảng A và tìm số phần tử nhỏ hơn nó và đặt vào mảng B",
+            "Mỗi bộ xử lý so sánh với 2 kết quả lân cận và đổi chỗ",
+            "Mỗi bộ xử lý làm nhiệm vụ đi tìm các phần tử nhỏ hơn và đổi chỗ",
+            "Đếm số phần tử sau đó đổi chỗ giữa phần tử đầu và phần tử cuối"
+        ],
+        correctAnswer: 2
+    },
+    {
+        question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+1.  nrow = 0;
+2.  while (nrow < P)
+3.  {
+4.      int oldrow;
+5.      for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+6.      {
+7.          int j; int t = 0;
+8.          for (j = 0; j < N; j++)
+9.              t += A[oldrow * N + j] * B[j];
+10.         C[oldrow] = t;
+11.     }
+12.     nrow++;
+13. }
+
+Muốn sửa đoạn lệnh trên thành cộng cuối ma trận thì sửa dòng lệnh nào?`,
+    options: [
+        "Dòng 4",
+        "Dòng 2",
+        "Dòng 8",
+        "Dòng 9"
+    ],
+        correctAnswer: 2
+    },
+    {
+        question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+1.  nrow = 0;
+2.  while (nrow < P)
+3.  {
+4.      int oldrow;
+5.      for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+6.      {
+7.          int j; int t = 0;
+8.          for (j = 0; j < N; j++)
+9.              t += A[oldrow * N + j] * B[j];
+10.         C[oldrow] = t;
+11.     }
+12.     nrow++;
+13. }
+
+Muốn tìm phần tử lớn nhất trên ma trận A thì thêm dòng lệnh ở vị trí nào?`,
+    options: [
+            "Trước dòng 4",
+            "Sau dòng 10",
+            "Sau dòng 7",
+            "Trước dòng 7"
+        ],
+        correctAnswer: 2
+    },
+
+    // Câu 221-227
+    {
+         question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+1.  nrow = 0;
+2.  while (nrow < P)
+3.  {
+4.      int oldrow;
+5.      for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+6.      {
+7.          int j; int t = 0;
+8.          for (j = 0; j < N; j++)
+9.              t += A[oldrow * N + j] * B[j];
+10.         C[oldrow] = t;
+11.     }
+12.     nrow++;
+13. }
+
+Muốn tìm phần tử lớn nhất trên ma trận A thì thêm dòng lệnh nào?`,
+    options: [
+        "if (Max < A[oldrow * N + j]) Max = A[oldrow * N + j]",
+        "if (Max > A[oldrow * N + j]) Max = A[oldrow * N + j]",
+        "if (Max < A[oldrow, j]) Max = A[oldrow, j]",
+        "if (Max < A[nrow, j]) Max = A[nrow, j]"
+    ],
+        correctAnswer: 0
+    },
+   {
+    question: `Cho đoạn lệnh nhân véc tơ với ma trận cấp N:
+
+1.  nrow = 0;
+2.  while (nrow < P)
+3.  {
+4.      int oldrow;
+5.      for (oldrow = nrow * N / P; oldrow < (nrow + 1) * N / P; oldrow++)
+6.      {
+7.          int j; int t = 0;
+8.          for (j = 0; j < N; j++)
+9.              t += A[oldrow * N + j] * B[j];
+10.         C[oldrow] = t;
+11.     }
+12.     nrow++;
+13. }
+
+Muốn tìm tọa độ lớn nhất của véc tơ kết quả thì thêm 1 dòng lệnh ở vị trí nào?`,
+    options: [
+        "Trước dòng 4",
+        "Trước dòng 7",
+        "Sau dòng 8",
+        "Sau dòng 10"
+    ],
+        correctAnswer: 2
+    },
+    
+    {
+        question: "Mỗi bộ xử lý Pi (0&lt;i&lt;n) có hai láng giềng là Pi-1 và Pi+1, các bộ xử lý đầu và cuối chỉ có một láng giềng là đặc điểm mô hình nào?",
+        options: [
+            "Mô hình mạng liên kết tuyến tính",
+            "Mô hình mạng kết vòng",
+            "Mô hình mạng liên kết lưới 2 chiều",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Mô hình mạng liên kết tuyến tính có đặc điểm gì?",
+        options: [
+            "Mỗi bộ xử lý Pi (0&lt;i&lt;n) có hai láng giềng là Pi-1 và Pi+1, các bộ xử lý đầu và cuối chỉ có một láng giềng",
+            "Mỗi bộ xử lý Pi (0&lt;i&lt;n) có một láng giềng",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+      {
+        question: "Mô hình mạng liên kết vòng có đặc điểm gì?",
+        options: [
+            "Mỗi bộ xử lý Pi (0&lt;i&lt;n) có hai láng giềng",
+            "Mỗi bộ xử lý Pi (0&lt;i&lt;n) có một láng giềng",
+            "Tất cả đều đúng",
+            "Tất cả đều sai"
+        ],
+        correctAnswer: 0
+    },
+
+    {
+        question: "Bài toán sàng Eratosthenes sàng số nguyên tố tìm số nguyên tố &lt;n thực hiện thế nào?",
+        options: [
+            "Loại khỏi dãy các bội &lt;n của số nguyên tố a hiện có, bắt đầu từ a=2, số nguyên tố tiếp theo sau a thực hiện giống như trên",
+            "Xây dựng hàm kiểm tra số nguyên tố, sau đó kiểm tra từng số từ 2 đến n-1 theo hàm đã xây dựng",
+            "Xây dựng hàm kiểm tra số nguyên tố, sau đó kiểm tra từng số từ 2 đến n/2 theo hàm đã xây dựng",
+            "Xây dựng hàm kiểm tra số nguyên tố, sau đó kiểm tra từng số từ 2 đến căn bậc hai của n theo hàm đã xây dựng"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Bài toán sàng Eratosthenes sàng số nguyên tố tìm số nguyên tố &lt;n được song song hóa thế nào?",
+        options: [
+            "Bộ xử lý P1 xóa bội số của 2, P2 xóa bội của 3, P3 xóa bội của 5…",
+            "Chia thành nhiều đoạn, mỗi bộ xử lý tìm trên một đoạn bằng hàm kiểm tra",
+            "Một bộ xử lý tìm từ đầu xuống, một bộ xử lý tìm từ dưới lên",
+            "Một bộ xử lý tìm từ đầu xuống, một bộ xử lý tìm từ giữa đến cuối"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Thuật toán song song nào tối ưu khi tìm số nguyên tố &lt;n?",
+        options: [
+            "Bộ xử lý P1 xóa bội số của 2, P2 xóa bội của 3, P3 xóa bội của 5…",
+            "Chia thành nhiều đoạn, mỗi bộ xử lý tìm trên một đoạn bằng hàm kiểm tra",
+            "Tất cả bộ xử lý xóa bội số của 2, sau đó xóa bội của 3…",
+            "Bộ xử lý P1, P2 xóa bội số của 2; P3, P4 xóa bội của 3…"
+        ],
+        correctAnswer: 0
+    },
+    {
+        question: "Thuật giải tuần tự nào có thể thực hiện song song khi tìm số nguyên tố &lt;n?",
+        options: [
+            "Loại khỏi dãy các bội < n của số nguyên tố a hiện có, bắt đầu từ a=2, số nguyên tố tiếp theo sau a thực hiện giống như trên. ",
+            "Xây dựng hàm kiểm tra số nguyên tố, sau đó kiểm tra từng số từ 2 đến n-1 theo hàm đã xây dựng ",
+            "Cả hai thuật giải đã đưa ra đều thiết kế được thuật giải song song",
+            "Cả hai thuật giải đã đưa ra đều không thiết kế được thuật giải song song"
+        ],
+        correctAnswer: 2
+    }
+
+
+];
+
+        // ========== BIẾN TOÀN CỤC ==========
+        let questions = [...allQuestions];
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(allQuestions.length).fill(null);
+        let userAnswersChecked = new Array(allQuestions.length).fill(false);
+        let score = 0;
+        
+        // Cài đặt
+        let autoNextEnabled = true;
+        let shuffleQuestionsEnabled = false;
+        let shuffleOptionsEnabled = false;
+        let retryWrongMode = false;
+        
+        // Lưu thứ tự xáo trộn
+        let questionShuffleMaps = new Array(allQuestions.length).fill(null);
+        let displayToOriginalQuestionMap = Array.from({length: allQuestions.length}, (_, i) => i);
+        
+        // Chế độ làm lại câu sai
+        let wrongQuestionsIndices = [];
+        let currentRetryIndex = 0;
+
+        // ========== DOM ELEMENTS ==========
+        const quizContent = document.getElementById('quiz-content');
+        const currentQuestionEl = document.getElementById('current-question');
+        const answeredCountEl = document.getElementById('answered-count');
+        const scoreEl = document.getElementById('score');
+        const progressPercentEl = document.getElementById('progress-percent');
+        const progressFillEl = document.getElementById('progress-fill');
+        const progressTextEl = document.getElementById('progress-text');
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resultBtn = document.getElementById('result-btn');
+        
+        const autoNextBtn = document.getElementById('auto-next-btn');
+        const shuffleQuestionsBtn = document.getElementById('shuffle-questions-btn');
+        const shuffleOptionsBtn = document.getElementById('shuffle-options-btn');
+        const retryWrongBtn = document.getElementById('retry-wrong-btn');
+        
+        const resultContainer = document.getElementById('result-container');
+        const finalScoreEl = document.getElementById('final-score');
+        const scoreTextEl = document.getElementById('score-text');
+        const statCorrectEl = document.getElementById('stat-correct');
+        const statWrongEl = document.getElementById('stat-wrong');
+        const statSkippedEl = document.getElementById('stat-skipped');
+        const statPercentageEl = document.getElementById('stat-percentage');
+        
+        const restartBtn = document.getElementById('restart-btn');
+        const reviewBtn = document.getElementById('review-btn');
+
+        // ========== HÀM TIỆN ÍCH ==========
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+
+        const updateStats = () => {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            const correctCount = userAnswers.reduce((count, answer, index) => {
+                if (answer !== null && answer === allQuestions[index].correctAnswer) {
+                    return count + 1;
+                }
+                return count;
+            }, 0);
+            
+            // Hiển thị khác nhau tùy chế độ
+            if (retryWrongMode) {
+                currentQuestionEl.textContent = `${currentRetryIndex + 1}/${wrongQuestionsIndices.length}`;
+            } else {
+                currentQuestionEl.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+            }
+            
+            answeredCountEl.textContent = `${answeredCount}/${allQuestions.length}`;
+            scoreEl.textContent = correctCount;
+            
+            const progressPercent = Math.round((answeredCount / allQuestions.length) * 100);
+            progressPercentEl.textContent = `${progressPercent}%`;
+            progressFillEl.style.width = `${progressPercent}%`;
+            progressTextEl.textContent = `${progressPercent}%`;
+        };
+
+        const getWrongQuestions = () => {
+            const wrongIndices = [];
+            
+            userAnswers.forEach((answer, originalIndex) => {
+                if (answer !== null && answer !== allQuestions[originalIndex].correctAnswer) {
+                    const displayIndex = displayToOriginalQuestionMap.indexOf(originalIndex);
+                    if (displayIndex !== -1) {
+                        wrongIndices.push(displayIndex);
+                    }
+                }
+            });
+            
+            return wrongIndices;
+        };
+
+        // ========== HIỂN THỊ CÂU HỎI (ĐÃ SỬA ĐỂ HỖ TRỢ HÌNH ẢNH) ==========
+        const displayQuestion = (displayIndex) => {
+            const originalIndex = displayToOriginalQuestionMap[displayIndex];
+            const question = questions[displayIndex];
+            
+            // Tạo bản đồ ánh xạ đáp án
+            let optionsToDisplay = [...question.options];
+            let displayToOriginalOptionMap = {};
+            
+            if (shuffleOptionsEnabled) {
+                if (!questionShuffleMaps[originalIndex]) {
+                    questionShuffleMaps[originalIndex] = shuffleArray([0, 1, 2, 3]);
+                }
+                
+                const shuffled = questionShuffleMaps[originalIndex];
+                optionsToDisplay = shuffled.map(i => question.options[i]);
+                
+                shuffled.forEach((originalIdx, displayIdx) => {
+                    displayToOriginalOptionMap[displayIdx] = originalIdx;
+                });
+            } else {
+                [0, 1, 2, 3].forEach((originalIdx, displayIdx) => {
+                    displayToOriginalOptionMap[displayIdx] = originalIdx;
+                });
+                questionShuffleMaps[originalIndex] = null;
+            }
+            
+            // Tạo HTML cho các đáp án
+            let optionsHTML = '';
+            optionsToDisplay.forEach((option, displayIndex) => {
+                const originalOptionIndex = displayToOriginalOptionMap[displayIndex];
+                const isSelected = userAnswers[originalIndex] === originalOptionIndex;
+                const isCorrect = originalOptionIndex === question.correctAnswer;
+                const isChecked = userAnswersChecked[originalIndex];
+                
+                let optionClass = 'option';
+                if (isSelected) optionClass += ' selected';
+                if (isChecked && isCorrect) optionClass += ' correct';
+                if (isChecked && isSelected && !isCorrect) optionClass += ' incorrect';
+                
+                const optionLabel = String.fromCharCode(65 + displayIndex);
+                
+                optionsHTML += `
+                    <div class="${optionClass}" data-original-index="${originalOptionIndex}">
+                        <div class="option-label">${optionLabel}</div>
+                        <div class="option-text">${option}</div>
+                        <div class="status-icon">
+                            ${isChecked && isCorrect ? '<i class="fas fa-check"></i>' : ''}
+                            ${isChecked && isSelected && !isCorrect ? '<i class="fas fa-times"></i>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Tạo HTML cho nội dung câu hỏi (HỖ TRỢ CẢ HÌNH ẢNH VÀ CODE)
+            let contentHTML = '';
+            
+            // Thêm hình ảnh nếu có
+            if (question.image) {
+                contentHTML += `
+                    <div class="question-content">
+                        ${question.question}
+                    </div>
+                    <img src="${question.image}" alt="Hình minh họa" class="question-image">
+                    ${question.imageCaption ? `<div class="image-caption">${question.imageCaption}</div>` : ''}
+                `;
+            } 
+            // Thêm code nếu có (và không có hình ảnh)
+            else if (question.content) {
+                contentHTML = `
+                    <div class="question-content">
+                        ${question.question}
+                    </div>
+                    <div class="code-container">
+                        ${highlightJavaCode(question.content)}
+                    </div>
+                `;
+            } 
+            // Nếu không có hình ảnh và code
+            else {
+                contentHTML = `
+                    <div class="question-content">
+                        ${question.question}
+                    </div>
+                `;
+            }
+            
+            // Tạo HTML cho toàn bộ câu hỏi
+            const questionHTML = `
+                <div class="question-container">
+                    <div class="question-header">
+                        <div class="question-number">
+                            <i class="fas fa-question-circle"></i>
+                            Câu hỏi số ${displayIndex + 1}
+                            ${retryWrongMode ? 
+                                `<span class="retry-mode-badge">
+                                    <i class="fas fa-exclamation-circle"></i> Làm lại câu sai (${currentRetryIndex + 1}/${wrongQuestionsIndices.length})
+                                </span>` : 
+                                ''}
+                        </div>
+                        <div style="color: #6c757d; font-size: 0.9rem;">
+                            Chọn một đáp án đúng
+                        </div>
+                    </div>
+                    
+                    ${contentHTML}
+                    
+                    <div class="options-grid">
+                        ${optionsHTML}
+                    </div>
+                    
+                    ${userAnswersChecked[originalIndex] ? `
+                        <div class="feedback">
+                            <h4><i class="fas fa-lightbulb"></i> Giải thích</h4>
+                            <div style="margin-top: 10px; padding: 10px; background: ${userAnswers[originalIndex] === question.correctAnswer ? '#d4edda' : '#f8d7da'}; border-radius: 5px;">
+                                <i class="fas ${userAnswers[originalIndex] === question.correctAnswer ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                                ${userAnswers[originalIndex] === question.correctAnswer ? 
+                                    '<strong>Chính xác!</strong> Bạn đã trả lời đúng.' : 
+                                    `<strong>Chưa chính xác.</strong> Đáp án đúng là: ${String.fromCharCode(65 + question.correctAnswer)}`}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            quizContent.innerHTML = questionHTML;
+            
+            // Thêm sự kiện click cho các đáp án
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => {
+                    if (!userAnswersChecked[originalIndex]) {
+                        const originalOptionIndex = parseInt(option.dataset.originalIndex);
+                        handleAnswer(originalIndex, originalOptionIndex);
+                    }
+                });
+            });
+            
+            // Cập nhật trạng thái nút điều hướng
+            if (retryWrongMode) {
+                prevBtn.disabled = currentRetryIndex === 0;
+                nextBtn.disabled = currentRetryIndex === wrongQuestionsIndices.length - 1;
+            } else {
+                prevBtn.disabled = displayIndex === 0;
+                nextBtn.disabled = displayIndex === questions.length - 1;
+            }
+            
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            resultBtn.style.display = answeredCount === allQuestions.length ? 'flex' : 'none';
+            
+            updateStats();
+        };
+
+        // ========== XỬ LÝ TRẢ LỜI ==========
+        const handleAnswer = (originalQuestionIndex, answerIndex) => {
+            userAnswers[originalQuestionIndex] = answerIndex;
+            userAnswersChecked[originalQuestionIndex] = true;
+            
+            const isCorrect = answerIndex === allQuestions[originalQuestionIndex].correctAnswer;
+            
+            // Trong chế độ làm lại câu sai
+            if (retryWrongMode) {
+                if (isCorrect) {
+                    // Nếu trả lời đúng trong chế độ làm lại
+                    const displayIndex = displayToOriginalQuestionMap.indexOf(originalQuestionIndex);
+                    const wrongIndex = wrongQuestionsIndices.indexOf(displayIndex);
+                    
+                    if (wrongIndex !== -1) {
+                        wrongQuestionsIndices.splice(wrongIndex, 1);
+                        
+                        // Nếu đã hết câu sai
+                        if (wrongQuestionsIndices.length === 0) {
+                            alert('🎉 Chúc mừng! Bạn đã làm lại tất cả các câu sai thành công!');
+                            toggleRetryWrongMode();
+                            return;
+                        }
+                        
+                        // Điều chỉnh currentRetryIndex
+                        if (currentRetryIndex >= wrongQuestionsIndices.length) {
+                            currentRetryIndex = 0;
+                        }
+                    }
+                }
+                
+                // Cập nhật điểm số ngay lập tức
+                score = userAnswers.reduce((count, answer, index) => {
+                    if (answer !== null && answer === allQuestions[index].correctAnswer) {
+                        return count + 1;
+                    }
+                    return count;
+                }, 0);
+            }
+            
+            const displayIndex = displayToOriginalQuestionMap.indexOf(originalQuestionIndex);
+            displayQuestion(displayIndex);
+            
+            // Tự động chuyển câu
+            if (autoNextEnabled) {
+                setTimeout(() => {
+                    if (retryWrongMode && wrongQuestionsIndices.length > 0) {
+                        currentRetryIndex++;
+                        if (currentRetryIndex < wrongQuestionsIndices.length) {
+                            currentQuestionIndex = wrongQuestionsIndices[currentRetryIndex];
+                            displayQuestion(currentQuestionIndex);
+                        } else {
+                            currentRetryIndex = 0;
+                            currentQuestionIndex = wrongQuestionsIndices[0];
+                            displayQuestion(currentQuestionIndex);
+                        }
+                    } else if (!retryWrongMode && currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        displayQuestion(currentQuestionIndex);
+                    }
+                }, 1500);
+            }
+        };
+
+        // ========== ĐIỀU KHIỂN ==========
+        const goToPrevQuestion = () => {
+            if (retryWrongMode) {
+                if (currentRetryIndex > 0) {
+                    currentRetryIndex--;
+                    currentQuestionIndex = wrongQuestionsIndices[currentRetryIndex];
+                    displayQuestion(currentQuestionIndex);
+                }
+            } else {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    displayQuestion(currentQuestionIndex);
+                }
+            }
+        };
+
+        const goToNextQuestion = () => {
+            if (retryWrongMode) {
+                if (currentRetryIndex < wrongQuestionsIndices.length - 1) {
+                    currentRetryIndex++;
+                    currentQuestionIndex = wrongQuestionsIndices[currentRetryIndex];
+                    displayQuestion(currentQuestionIndex);
+                }
+            } else {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    displayQuestion(currentQuestionIndex);
+                }
+            }
+        };
+
+        const showResults = () => {
+            let correct = 0;
+            let wrong = 0;
+            let skipped = 0;
+            
+            userAnswers.forEach((answer, originalIndex) => {
+                if (answer === null) {
+                    skipped++;
+                } else if (answer === allQuestions[originalIndex].correctAnswer) {
+                    correct++;
+                } else {
+                    wrong++;
+                }
+            });
+            
+            const percentage = Math.round((correct / allQuestions.length) * 100);
+            
+            finalScoreEl.textContent = `${correct}/${allQuestions.length}`;
+            statCorrectEl.textContent = correct;
+            statWrongEl.textContent = wrong;
+            statSkippedEl.textContent = skipped;
+            statPercentageEl.textContent = `${percentage}%`;
+            
+            let evaluation = '';
+            if (percentage >= 90) {
+                evaluation = '🎉 Xuất sắc! Bạn thực sự am hiểu Lập Trình Mạng!';
+            } else if (percentage >= 70) {
+                evaluation = '👍 Rất tốt! Kiến thức của bạn khá vững vàng.';
+            } else if (percentage >= 50) {
+                evaluation = '✅ Khá ổn! Bạn nên ôn tập thêm một chút.';
+            } else if (percentage >= 30) {
+                evaluation = '📚 Cần cố gắng! Hãy dành thời gian ôn tập nhiều hơn.';
+            } else {
+                evaluation = '💪 Đừng nản! Hãy bắt đầu ôn tập lại từ đầu.';
+            }
+            
+            scoreTextEl.textContent = evaluation;
+            
+            document.querySelector('.question-container')?.remove();
+            resultContainer.classList.add('show');
+        };
+
+        const restartQuiz = () => {
+            currentQuestionIndex = 0;
+            userAnswers = new Array(allQuestions.length).fill(null);
+            userAnswersChecked = new Array(allQuestions.length).fill(false);
+            score = 0;
+            
+            questionShuffleMaps = new Array(allQuestions.length).fill(null);
+            displayToOriginalQuestionMap = Array.from({length: allQuestions.length}, (_, i) => i);
+            
+            // Reset chế độ làm lại
+            retryWrongMode = false;
+            wrongQuestionsIndices = [];
+            currentRetryIndex = 0;
+            
+            // Reset cài đặt
+            shuffleOptionsEnabled = false;
+            shuffleOptionsBtn.classList.remove('active');
+            shuffleOptionsBtn.innerHTML = '<i class="fas fa-list-ol"></i><span>Đảo đáp án</span>';
+            
+            shuffleQuestionsEnabled = false;
+            shuffleQuestionsBtn.classList.remove('active');
+            shuffleQuestionsBtn.innerHTML = '<i class="fas fa-random"></i><span>Đảo câu hỏi</span>';
+            
+            autoNextEnabled = true;
+            autoNextBtn.classList.add('active');
+            autoNextBtn.innerHTML = '<i class="fas fa-bolt"></i><span>Tự chuyển câu (BẬT)</span>';
+            
+            // Reset nút làm lại
+            retryWrongBtn.innerHTML = '<i class="fas fa-redo-alt"></i><span>Làm lại câu sai</span>';
+            retryWrongBtn.classList.remove('active');
+            retryWrongBtn.style.background = '#dc3545';
+            
+            resultContainer.classList.remove('show');
+            resultBtn.style.display = 'none';
+            
+            questions = [...allQuestions];
+            
+            displayQuestion(currentQuestionIndex);
+        };
+
+        const reviewAnswers = () => {
+            let reviewHTML = '<div class="question-container">';
+            reviewHTML += '<h2 style="margin-bottom: 30px;"><i class="fas fa-list-ol"></i> Chi Tiết Bài Làm</h2>';
+            
+            displayToOriginalQuestionMap.forEach((originalIndex, displayIndex) => {
+                const q = allQuestions[originalIndex];
+                const userAnswer = userAnswers[originalIndex];
+                const isCorrect = userAnswer === q.correctAnswer;
+                const hasAnswer = userAnswer !== null;
+                
+                reviewHTML += `
+                    <div style="margin-bottom: 25px; padding: 20px; border: 2px solid ${isCorrect ? '#28a745' : '#dc3545'}; border-radius: 10px; background: ${isCorrect ? '#d4edda20' : '#f8d7da20'}">
+                        <div style="font-weight: bold; margin-bottom: 10px; color: #2c3e50;">
+                            Câu ${displayIndex + 1}: ${q.question}
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Đáp án của bạn:</strong> ${hasAnswer ? String.fromCharCode(65 + userAnswer) : 'Chưa trả lời'}
+                            ${hasAnswer ? ` <span style="color: ${isCorrect ? '#28a745' : '#dc3545'}">(${isCorrect ? 'Đúng' : 'Sai'})</span>` : ''}
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Đáp án đúng:</strong> ${String.fromCharCode(65 + q.correctAnswer)}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            reviewHTML += '</div>';
+            quizContent.innerHTML = reviewHTML;
+            resultContainer.classList.remove('show');
+            
+            const backBtn = document.createElement('button');
+            backBtn.className = 'btn';
+            backBtn.style.cssText = 'background: #6c757d; color: white; margin: 20px auto; display: block;';
+            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Quay lại kết quả';
+            backBtn.onclick = showResults;
+            quizContent.appendChild(backBtn);
+        };
+
+        // ========== TOGGLE SETTINGS ==========
+        const toggleAutoNext = () => {
+            autoNextEnabled = !autoNextEnabled;
+            autoNextBtn.classList.toggle('active', autoNextEnabled);
+            autoNextBtn.innerHTML = autoNextEnabled ? 
+                '<i class="fas fa-bolt"></i><span>Tự chuyển câu (BẬT)</span>' : 
+                '<i class="fas fa-bolt"></i><span>Tự chuyển câu (TẮT)</span>';
+        };
+
+        const toggleShuffleQuestions = () => {
+            shuffleQuestionsEnabled = !shuffleQuestionsEnabled;
+            shuffleQuestionsBtn.classList.toggle('active', shuffleQuestionsEnabled);
+            
+            if (shuffleQuestionsEnabled) {
+                const shuffledIndices = shuffleArray([...Array(allQuestions.length).keys()]);
+                displayToOriginalQuestionMap = shuffledIndices;
+                questions = shuffledIndices.map(i => allQuestions[i]);
+                
+                shuffleQuestionsBtn.innerHTML = '<i class="fas fa-random"></i><span>Đảo câu hỏi (BẬT)</span>';
+            } else {
+                displayToOriginalQuestionMap = Array.from({length: allQuestions.length}, (_, i) => i);
+                questions = [...allQuestions];
+                
+                shuffleQuestionsBtn.innerHTML = '<i class="fas fa-random"></i><span>Đảo câu hỏi (TẮT)</span>';
+            }
+            
+            currentQuestionIndex = 0;
+            displayQuestion(currentQuestionIndex);
+        };
+
+        const toggleShuffleOptions = () => {
+            shuffleOptionsEnabled = !shuffleOptionsEnabled;
+            shuffleOptionsBtn.classList.toggle('active', shuffleOptionsEnabled);
+            shuffleOptionsBtn.innerHTML = shuffleOptionsEnabled ? 
+                '<i class="fas fa-list-ol"></i><span>Đảo đáp án (BẬT)</span>' : 
+                '<i class="fas fa-list-ol"></i><span>Đảo đáp án (TẮT)</span>';
+            
+            if (shuffleOptionsEnabled) {
+                allQuestions.forEach((_, index) => {
+                    if (!questionShuffleMaps[index]) {
+                        questionShuffleMaps[index] = shuffleArray([0, 1, 2, 3]);
+                    }
+                });
+            } else {
+                questionShuffleMaps.fill(null);
+            }
+            
+            displayQuestion(currentQuestionIndex);
+        };
+
+        const toggleRetryWrongMode = () => {
+            const wrongQuestions = getWrongQuestions();
+            
+            if (!retryWrongMode) {
+                // Bật chế độ làm lại
+                if (wrongQuestions.length === 0) {
+                    alert('Bạn không có câu nào trả lời sai để làm lại!');
+                    return;
+                }
+                
+                retryWrongMode = true;
+                wrongQuestionsIndices = [...wrongQuestions];
+                currentRetryIndex = 0;
+                
+                // XÓA HOÀN TOÀN ĐÁP ÁN CŨ CỦA CÁC CÂU SAI
+                wrongQuestionsIndices.forEach(displayIndex => {
+                    const originalIndex = displayToOriginalQuestionMap[displayIndex];
+                    // Xóa đáp án đã chọn
+                    userAnswers[originalIndex] = null;
+                    // Đánh dấu là chưa kiểm tra
+                    userAnswersChecked[originalIndex] = false;
+                });
+                
+                // Cập nhật lại điểm số sau khi xóa đáp án cũ
+                score = userAnswers.reduce((count, answer, index) => {
+                    if (answer !== null && answer === allQuestions[index].correctAnswer) {
+                        return count + 1;
+                    }
+                    return count;
+                }, 0);
+                
+                // Đổi giao diện nút
+                retryWrongBtn.innerHTML = '<i class="fas fa-times"></i><span>Thoát chế độ làm lại</span>';
+                retryWrongBtn.classList.add('active');
+                retryWrongBtn.style.background = '#6c757d';
+                
+                // Đi đến câu sai đầu tiên
+                currentQuestionIndex = wrongQuestionsIndices[0];
+                displayQuestion(currentQuestionIndex);
+                
+                // Thông báo
+                alert(`🎯 Bật chế độ làm lại câu sai\n\nBạn có ${wrongQuestions.length} câu sai cần ôn tập.\nĐáp án cũ đã được xóa để bạn có thể làm lại từ đầu.`);
+                
+                // Cập nhật lại thống kê
+                updateStats();
+                
+            } else {
+                // Tắt chế độ làm lại
+                retryWrongMode = false;
+                wrongQuestionsIndices = [];
+                currentRetryIndex = 0;
+                
+                // Khôi phục giao diện nút
+                retryWrongBtn.innerHTML = '<i class="fas fa-redo-alt"></i><span>Làm lại câu sai</span>';
+                retryWrongBtn.classList.remove('active');
+                retryWrongBtn.style.background = '#dc3545';
+                
+                // Quay về câu đầu tiên
+                currentQuestionIndex = 0;
+                displayQuestion(currentQuestionIndex);
+                
+                alert('Đã thoát chế độ làm lại câu sai.');
+            }
+        };
+
+        // ========== KHỞI TẠO ==========
+        const init = () => {
+            displayQuestion(currentQuestionIndex);
+            
+            // Thêm sự kiện cho các nút
+            prevBtn.addEventListener('click', goToPrevQuestion);
+            nextBtn.addEventListener('click', goToNextQuestion);
+            resultBtn.addEventListener('click', showResults);
+            
+            autoNextBtn.addEventListener('click', toggleAutoNext);
+            shuffleQuestionsBtn.addEventListener('click', toggleShuffleQuestions);
+            shuffleOptionsBtn.addEventListener('click', toggleShuffleOptions);
+            retryWrongBtn.addEventListener('click', toggleRetryWrongMode);
+            
+            restartBtn.addEventListener('click', restartQuiz);
+            reviewBtn.addEventListener('click', reviewAnswers);
+            
+            // Thêm phím tắt
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        if (!prevBtn.disabled) goToPrevQuestion();
+                        break;
+                    case 'ArrowRight':
+                    case ' ':
+                        if (!nextBtn.disabled) goToNextQuestion();
+                        break;
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                        const options = document.querySelectorAll('.option');
+                        const optionIndex = parseInt(e.key) - 1;
+                        if (optionIndex >= 0 && optionIndex < options.length) {
+                            if (options[optionIndex]) {
+                                options[optionIndex].click();
+                            }
+                        }
+                        break;
+                }
+            });
+        };
+
+        init();
+    </script>
+</body>
+</html>
